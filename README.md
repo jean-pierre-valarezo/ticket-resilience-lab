@@ -100,25 +100,3 @@ Detener los port-forward:
 .\scripts\13-stop-port-forward.ps1
 ```
 
-## Evidencias recomendadas
-
-Guardar capturas en `docs/evidence/`.
-El resumen tecnico validado esta en `docs/results-summary.md`.
-
-1. `docker compose up --build -d` con todos los servicios levantados.
-2. `kubectl get nodes -o wide` mostrando minimo 2 nodos.
-3. `kubectl -n ticket-lab get pods -o wide` mostrando los componentes desplegados.
-4. Health checks del gateway e inventario.
-5. Inventario inicial con asientos disponibles.
-6. `POST /reserve` confirmando una reserva.
-7. Inventory down con respuesta controlada.
-8. Payments lento con circuit breaker abierto.
-9. Notifications caido con reserva confirmada y notificacion pendiente.
-10. Diluvio de peticiones con respuestas HTTP 429.
-
-## Siguientes pasos
-
-1. Ejecutar el flujo Kubernetes completo.
-2. Guardar capturas en `docs/evidence/`.
-3. Preparar el informe final con analisis de resultados.
-4. Preparar la demo oral de 10 a 15 minutos.
