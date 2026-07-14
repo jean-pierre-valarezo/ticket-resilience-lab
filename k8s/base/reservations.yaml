@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservations
+  namespace: ticket-lab
+  labels:
+    app: reservations
+spec:
+  selector:
+    app: reservations
+  ports:
+    - name: http
+      port: 8001
+      targetPort: 8001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservations
+  namespace: ticket-lab
+  labels:
+    app: reservations
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reservations
+  template:
+    metadata:
+      labels:
+        app: reservations
+    spec:
+      containers:
+        - name: reservations
+          image: ticket-resilience-lab-reservations:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8001
+          env:
+            - name: INVENTORY_URL
+              value: http://inventory:8002
+            - name: PAYMENTS_URL
+              value: http://payments:8003
+            - name: NOTIFICATIONS_URL
+              value: http://notifications:8004
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ticketdb
+      POSTGRES_USER: ticket
+      POSTGRES_PASSWORD: ticket
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ticket -d ticketdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  inventory:
+    build: ./services/inventory
+    environment:
+      DATABASE_URL: postgresql://ticket:ticket@postgres:5432/ticketdb
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  payments:
+    build: ./services/payments
+    environment:
+      PAYMENT_DELAY_MS: "250"
+      PAYMENT_FAILURE_RATE: "0.0"
+    ports:
+      - "8003:8003"
+
+  notifications:
+    build: ./services/notifications
+    environment:
+      NOTIFICATION_DELAY_MS: "150"
+      NOTIFICATION_FAILURE_RATE: "0.0"
+    ports:
+      - "8004:8004"
+
+  reservations:
+    build: ./services/reservations
+    environment:
+      INVENTORY_URL: http://inventory:8002
+      PAYMENTS_URL: http://payments:8003
+      NOTIFICATIONS_URL: http://notifications:8004
+      PAYMENT_TIMEOUT_SECONDS: "3"
+      PAYMENT_FAILURE_THRESHOLD: "3"
+      PAYMENT_CIRCUIT_RESET_SECONDS: "15"
+    ports:
+      - "8001:8001"
+    depends_on:
+      - inventory
+      - payments
+      - notifications
+
+  gateway:
+    build: ./services/gateway
+    environment:
+      RESERVATIONS_URL: http://reservations:8001
+      RATE_LIMIT_REQUESTS: "30"
+      RATE_LIMIT_WINDOW_SECONDS: "10"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - reservations

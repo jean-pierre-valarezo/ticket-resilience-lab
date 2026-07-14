@@ -1,0 +1,8 @@
+resources:
+  - namespace.yaml
+  - postgres.yaml
+  - inventory.yaml
+  - payments.yaml
+  - notifications.yaml
+  - reservations.yaml
+  - gateway.yaml
