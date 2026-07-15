@@ -30,7 +30,7 @@ from reportlab.platypus import (
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 EVIDENCE = DOCS / "evidence"
-LOGO = DOCS / "ups-logo-grayscale.png"
+LOGO = DOCS / "ups-logo-color.png"
 DIAGRAM = DOCS / "architecture-distribution.png"
 DOCX_OUT = DOCS / "Informe_Ticket_Resilience_Lab.docx"
 PDF_OUT = DOCS / "Informe_Ticket_Resilience_Lab.pdf"
