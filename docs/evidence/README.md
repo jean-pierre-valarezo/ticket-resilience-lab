@@ -23,14 +23,13 @@ Capturas Kubernetes recomendadas:
 
 Usar nombres descriptivos, por ejemplo:
 
-- `01-compose-servicios-levantados.png`
-- `02-health-gateway.png`
-- `03-inventario-inicial.png`
-- `04-reserva-exitosa.png`
-- `05-inventario-asiento-reservado.png`
-- `06-k8s-dos-nodos.png`
-- `07-k8s-pods-ticket-lab.png`
-- `08-chaos-inventory-down.png`
-- `09-chaos-payments-circuit-breaker.png`
-- `10-chaos-notifications-fallback.png`
-- `11-chaos-traffic-rate-limit.png`
+- `01-k8s-dos-nodos-ready.png`
+- `02-k8s-pods-inventory-replicado-dos-nodos.png`
+- `03-port-forward-servicios-locales.png`
+- `04-baseline-health-inventario-inicial-1.png`
+- `06-baseline-reserva-exitosa.png`
+- `09-chaos-inventory-down-http-503.png`
+- `11-chaos-payments-slow-circuit-breaker-open-1.png`
+- `12-chaos-payments-slow-circuit-breaker-open-2.png`
+- `15-chaos-notifications-down-fallback-pending.png`
+- `17-chaos-traffic-spike-rate-limit-429.png`

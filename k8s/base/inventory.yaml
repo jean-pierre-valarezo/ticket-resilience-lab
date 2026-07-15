@@ -21,7 +21,7 @@ metadata:
   labels:
     app: inventory
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: inventory
@@ -30,6 +30,13 @@ spec:
       labels:
         app: inventory
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: inventory
       containers:
         - name: inventory
           image: ticket-resilience-lab-inventory:latest

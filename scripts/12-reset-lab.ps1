@@ -1,7 +1,8 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-kubectl -n ticket-lab scale deployment/postgres deployment/inventory deployment/payments deployment/notifications deployment/reservations deployment/gateway --replicas=1
+kubectl -n ticket-lab scale deployment/postgres deployment/payments deployment/notifications deployment/reservations deployment/gateway --replicas=1
+kubectl -n ticket-lab scale deployment/inventory --replicas=2
 kubectl -n ticket-lab set env deployment/payments PAYMENT_DELAY_MS=0 PAYMENT_FAILURE_RATE=0
 kubectl -n ticket-lab set env deployment/notifications NOTIFICATION_DELAY_MS=0 NOTIFICATION_FAILURE_RATE=0
 

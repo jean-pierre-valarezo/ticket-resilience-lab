@@ -13,6 +13,8 @@ Demostrar mecanismos de tolerancia a fallas en una arquitectura simplificada de 
 - `notifications`: servicio no critico con fallback.
 - `postgres`: persistencia del inventario.
 
+El componente critico `inventory` se despliega con 2 replicas y restriccion de distribucion por `kubernetes.io/hostname`, de modo que Kubernetes intente ubicar sus pods entre los dos nodos del cluster.
+
 ## Mecanismos defendidos en vivo
 
 | Escenario | Falla inyectada | Defensa implementada | Evidencia esperada |

@@ -23,6 +23,7 @@ Componentes desplegados:
 - `postgres`
 
 Estado observado: todos los pods quedaron `1/1 Running`.
+El servicio critico `inventory` queda configurado con 2 replicas y distribucion por nodo mediante `topologySpreadConstraints`.
 
 ## Evidencia base
 
