@@ -5,8 +5,15 @@ from enum import Enum
 from uuid import uuid4
 
 import httpx
+import logging
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger("reservations")
 
 
 INVENTORY_URL = os.getenv("INVENTORY_URL", "http://localhost:8002")
@@ -61,6 +68,8 @@ class CircuitBreaker:
     def record_failure(self) -> None:
         self.failure_count += 1
         if self.failure_count >= self.failure_threshold or self.state == CircuitState.HALF_OPEN:
+            if self.state != CircuitState.OPEN:
+                logger.warning("Circuit breaker transitioning to OPEN state!")
             self.state = CircuitState.OPEN
             self.opened_at = time.time()
 
@@ -116,8 +125,10 @@ async def reserve_inventory(request: ReservationRequest) -> dict:
             last_error = str(exc)
 
         if attempt < len(backoffs):
+            logger.info(f"Inventory reservation failed (attempt {attempt + 1}). Retrying in {backoffs[attempt]}s...")
             await asyncio.sleep(backoffs[attempt])
 
+    logger.error(f"Inventory reservation exhausted all {INVENTORY_RETRY_ATTEMPTS} attempts.")
     raise HTTPException(
         status_code=503,
         detail={"message": "inventory reservation failed", "cause": last_error},
