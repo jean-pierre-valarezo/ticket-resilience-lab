@@ -32,6 +32,7 @@ DOCS = ROOT / "docs"
 EVIDENCE = DOCS / "evidence"
 LOGO = DOCS / "ups-logo-color.png"
 DIAGRAM = DOCS / "architecture-distribution.png"
+REPORT_ASSETS = DOCS / "report_assets"
 DOCX_OUT = DOCS / "Informe_Ticket_Resilience_Lab.docx"
 PDF_OUT = DOCS / "Informe_Ticket_Resilience_Lab.pdf"
 MD_OUT = DOCS / "informe-tecnico.md"
@@ -263,6 +264,20 @@ def build_diagram() -> None:
     img.save(DIAGRAM)
 
 
+def report_image(path: Path) -> Path:
+    if path == LOGO:
+        return path
+    if not path.exists():
+        return path
+    REPORT_ASSETS.mkdir(exist_ok=True)
+    target = REPORT_ASSETS / f"{path.stem}-bw.png"
+    if target.exists() and target.stat().st_mtime >= path.stat().st_mtime:
+        return target
+    image = Image.open(path).convert("L").convert("RGB")
+    image.save(target)
+    return target
+
+
 def set_doc_styles(doc: Document) -> None:
     styles = doc.styles
     styles["Normal"].font.name = "Arial"
@@ -310,6 +325,7 @@ def add_doc_table(doc: Document, headers: list[str], rows: list[list[str]], font
 def add_doc_image(doc: Document, image_path: Path, caption: str, width: float = 6.25) -> None:
     if not image_path.exists():
         return
+    image_path = report_image(image_path)
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.add_run().add_picture(str(image_path), width=Inches(width))
@@ -528,6 +544,7 @@ def p(text: str, style: ParagraphStyle) -> Paragraph:
 
 
 def pdf_image(path: Path, max_width: float = 6.4 * inch) -> PdfImage:
+    path = report_image(path)
     with Image.open(path) as img:
         w, h = img.size
     ratio = max_width / w
